@@ -1,0 +1,16 @@
+{
+  "name": "@openapi-kr/specifications",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Open API Specifications",
+  "scripts": {
+    "lint": "./scripts/lint.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ibm-cloud/openapi-ruleset": "^0.45.5",
+    "ibm-openapi-validator": "^0.97.5"
+  }
+}
