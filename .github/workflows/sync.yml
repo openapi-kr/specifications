@@ -8,6 +8,6 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - run: gh api /repos/hahnlee/sdks/dispatches -f event_type='sync_specifications'
+      - run: gh api /repos/openapi-kr/sdks/dispatches -f event_type='sync_specifications'
         env:
           GITHUB_TOKEN: ${{ secrets.BOT_TOKEN }}
