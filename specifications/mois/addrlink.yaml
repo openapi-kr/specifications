@@ -102,7 +102,7 @@ paths:
                 $ref: '#/components/schemas/AddrLinkResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrLinkResponse/properties/results'
+                $ref: '#/components/schemas/AddrLinkResults'
       security:
         - ApiKeyAuth: []
     post:
@@ -190,7 +190,7 @@ paths:
                 $ref: '#/components/schemas/AddrLinkResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrLinkResponse/properties/results'
+                $ref: '#/components/schemas/AddrLinkResults'
       security:
         - ApiKeyAuth: []
   /addrlink/addrEngApi.do:
@@ -239,7 +239,7 @@ paths:
                 $ref: '#/components/schemas/AddrEngResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrEngResponse/properties/results'
+                $ref: '#/components/schemas/AddrEngResults'
       security:
         - ApiKeyAuth: []
     post:
@@ -287,7 +287,7 @@ paths:
                 $ref: '#/components/schemas/AddrEngResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrEngResponse/properties/results'
+                $ref: '#/components/schemas/AddrEngResults'
       security:
         - ApiKeyAuth: []
   /addrlink/addrDetailApi.do:
@@ -368,7 +368,7 @@ paths:
                 $ref: '#/components/schemas/AddrDetailResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrDetailResponse/properties/results'
+                $ref: '#/components/schemas/AddrDetailResults'
       security:
         - ApiKeyAuth: []
     post:
@@ -448,7 +448,7 @@ paths:
                 $ref: '#/components/schemas/AddrDetailResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrDetailResponse/properties/results'
+                $ref: '#/components/schemas/AddrDetailResults'
       security:
         - ApiKeyAuth: []
   /addrlink/addrCoordApi.do:
@@ -505,7 +505,7 @@ paths:
                 $ref: '#/components/schemas/AddrCoordResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrCoordResponse/properties/results'
+                $ref: '#/components/schemas/AddrCoordResults'
       security:
         - ApiKeyAuth: []
     post:
@@ -561,7 +561,7 @@ paths:
                 $ref: '#/components/schemas/AddrCoordResponse'
             application/xml:
               schema:
-                $ref: '#/components/schemas/AddrCoordResponse/properties/results'
+                $ref: '#/components/schemas/AddrCoordResults'
       security:
         - ApiKeyAuth: []
 components:
@@ -741,18 +741,24 @@ components:
       type: object
       properties:
         results:
-          type: object
-          properties:
-            common:
-              $ref: '#/components/schemas/Common'
-            juso:
-              type: array
-              nullable: true # 문서와 다르게 null이 될 수 있음
-              items:
-                $ref: '#/components/schemas/Address'
-          required:
-            - common
-            - juso
+          $ref: '#/components/schemas/AddrLinkResults'
+      required:
+        - results
+    AddrLinkResults:
+      type: object
+      properties:
+        common:
+          $ref: '#/components/schemas/Common'
+        juso:
+          type: array
+          nullable: true # 문서와 다르게 null이 될 수 있음
+          items:
+            $ref: '#/components/schemas/Address'
+      required:
+        - common
+        - juso
+      xml:
+        name: results
     EnglishAddress:
       type: object
       properties:
@@ -850,15 +856,24 @@ components:
       type: object
       properties:
         results:
-          type: object
-          properties:
-            common:
-              $ref: '#/components/schemas/Common'
-            juso:
-              type: array
-              nullable: true # 문서와 다르게 null이 될 수 있음
-              items:
-                $ref: '#/components/schemas/EnglishAddress'
+          $ref: '#/components/schemas/AddrEngResults'
+      required:
+        - results
+    AddrEngResults:
+      type: object
+      properties:
+        common:
+          $ref: '#/components/schemas/Common'
+        juso:
+          type: array
+          nullable: true # 문서와 다르게 null이 될 수 있음
+          items:
+            $ref: '#/components/schemas/EnglishAddress'     
+      required:
+        - common
+        - juso 
+      xml:
+        name: results
     DetailAddress:
       type: object
       properties:
@@ -902,15 +917,24 @@ components:
       type: object
       properties:
         results:
-          type: object
-          properties:
-            common:
-              $ref: '#/components/schemas/Common'
-            juso:
-              type: array
-              nullable: true # 문서와 다르게 null이 될 수 있음
-              items:
-                $ref: '#/components/schemas/DetailAddress'
+          $ref: '#/components/schemas/AddrDetailResults'
+      required:
+        - results
+    AddrDetailResults:
+      type: object
+      properties:
+        common:
+          $ref: '#/components/schemas/Common'
+        juso:
+          type: array
+          nullable: true # 문서와 다르게 null이 될 수 있음
+          items:
+            $ref: '#/components/schemas/DetailAddress'
+      required:
+        - common
+        - juso
+      xml:
+        name: results
     Coord:
       type: object
       properties:
@@ -960,15 +984,24 @@ components:
       type: object
       properties:
         results:
-          type: object
-          properties:
-            common:
-              $ref: '#/components/schemas/Common'
-            juso:
-              type: array
-              nullable: true # 문서와 다르게 null이 될 수 있음
-              items:
-                $ref: '#/components/schemas/Coord'
+          $ref: '#/components/schemas/AddrCoordResults'
+      required:
+        - results
+    AddrCoordResults:
+      type: object
+      properties:
+        common:
+          $ref: '#/components/schemas/Common'
+        juso:
+          type: array
+          nullable: true # 문서와 다르게 null이 될 수 있음
+          items:
+            $ref: '#/components/schemas/Coord'
+      required:
+        - common
+        - juso
+      xml:
+        name: results
   securitySchemes:
     ApiKeyAuth:
       type: apiKey
