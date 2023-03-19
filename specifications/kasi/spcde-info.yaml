@@ -1,0 +1,371 @@
+openapi: 3.0.3
+info:
+  title: 한국천문연구원 특일 정보
+  description: |-
+    (천문우주정보)국경일정보, 공휴일정보, 기념일정보, 24절기정보, 잡절정보를 조회하는 서비스 입니다.
+
+    활용시 날짜, 순번, 특일정보의 분류, 공공기관 휴일 여부, 명칭을 확인할 수 있습니다.
+  version: 1.4.0
+  contact:
+    name: 천문전산융합센터
+    url: 'http://www.kasi.re.kr'
+    email: sol0993@kasi.re.kr
+  license:
+    name: 이용허락범위 제한 없음
+    url: 'https://www.kogl.or.kr/info/license.do'
+  termsOfService: 'https://www.data.go.kr/ugs/selectPortalPolicyView.do'
+externalDocs:
+  description: 공공데이터포털
+  url: 'https://www.data.go.kr/data/15012690/openapi.do'
+servers:
+  - url: https://apis.data.go.kr
+tags:
+  - name: 공휴일 정보조회
+  - name: 국경일 정보조회
+  - name: 24절기 정보조회
+  - name: 잡절 정보조회
+paths:
+  /B090041/openapi/service/SpcdeInfoService/getHoliDeInfo:
+    get:
+      summary: 국경일 정보조회
+      tags:
+        - 국경일 정보조회
+      description: |-
+        연, 월별로 구분(국경일), 요일, 공휴일 여부 등의 정보를 제공한다.
+  
+        국경일에 대한 정보 조회로 제헌절은 해당 오퍼레이션에 포함되나 isHoliday=N 으로 출력된다.
+      operationId: getHoliDeInfo
+      parameters:
+        - name: solYear
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 조회년도
+          example: 2023
+        - name: solMonth
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 조회월
+          example: '05'
+        - name: _type
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: xml
+          description: 응답데이터형식 설정
+        - name: numOfRows
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: 한 페이지 결과 수
+        - name: pageNo
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: 페이지 번호
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ResponseXML'
+      security:
+        - ApiKeyAuth: []
+  /B090041/openapi/service/SpcdeInfoService/getRestDeInfo:
+    get:
+      summary: 공휴일 정보조회
+      tags:
+        - 공휴일 정보조회
+      description: |-
+        월별로 구분(공휴일), 요일, 공휴일 여부 등의 정보를 제공한다.
+
+        휴일 정보에 대한 조회로 제헌절은 해당 오퍼레이션에서 제공되지 않는다.
+      operationId: getRestDeInfo
+      parameters:
+        - name: solYear
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 조회년도
+          example: 2023
+        - name: solMonth
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 조회월
+          example: '05'
+        - name: _type
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: xml
+          description: 응답데이터형식 설정
+        - name: numOfRows
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: 한 페이지 결과 수
+        - name: pageNo
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: 페이지 번호
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ResponseXML'
+      security:
+        - ApiKeyAuth: []
+  /B090041/openapi/service/SpcdeInfoService/get24DivisionsInfo:
+    get:
+      summary: 24절기 정보조회
+      tags:
+        - 24절기 정보조회
+      description: |-
+        월별로 구분(24절기), 요일, 공휴일 여부 등의 정보를 제공한다.
+      operationId: get24DivisionsInfo
+      parameters:
+        - name: solYear
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 조회년도
+          example: 2023
+        - name: solMonth
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 조회월
+          example: '05'
+        - name: _type
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: xml
+          description: 응답데이터형식 설정
+        - name: numOfRows
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: 한 페이지 결과 수
+        - name: pageNo
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: 페이지 번호
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ResponseXML'
+      security:
+        - ApiKeyAuth: []
+  /B090041/openapi/service/SpcdeInfoService/getSundryDayInfo:
+    get:
+      summary: 잡절 정보조회
+      tags:
+        - 잡절 정보조회
+      description: |-
+        월별로 구분(잡절), 요일, 공휴일 여부 등의 정보를 제공한다.
+      operationId: getSundryDayInfo
+      parameters:
+        - name: solYear
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 조회년도
+          example: 2023
+        - name: solMonth
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 조회월
+          example: '05'
+        - name: _type
+          in: query
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+            default: xml
+          description: 응답데이터형식 설정
+        - name: numOfRows
+          in: query
+          schema:
+            type: integer
+            default: 10
+          description: 한 페이지 결과 수
+        - name: pageNo
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: 페이지 번호
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Response'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ResponseXML'
+      security:
+        - ApiKeyAuth: []
+components:
+  schemas:
+    DateKind:
+      type: string
+      enum:
+        - '01'
+        - '02'
+        - '03'
+        - '04'
+      description: |-
+        종류
+        |값|항목명|예시|
+        |---|:---:|--:|
+        |`01`|국경일|어린이 날, 광복절, 개천절|
+        |`02`|기념일|의병의 날, 정보보호의 날, 4·19 혁명 기념일|
+        |`03`|24절기|청명, 경칩, 하지|
+        |`04`|잡절|단오, 한식|
+    Response:
+      type: object
+      properties:
+        response:
+          type: object
+          properties:
+            header:
+              $ref: '#/components/schemas/ResponseHeader'
+            body:
+              $ref: '#/components/schemas/ResponseBody'
+          required:
+            - header
+      required:
+        - response
+    ResponseXML:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/ResponseHeader'
+        body:
+          $ref: '#/components/schemas/ResponseBody'
+      required:
+        - header
+      xml:
+        name: response
+    ResponseHeader:
+      type: object
+      properties:
+        resultCode:
+          type: string
+          description: |-
+            결과코드
+            |값|항목명|
+            |---|:---:|
+            |`00`|성공|
+        resultMsg:
+          type: string
+          description: |-
+            결과메세지
+            |값|항목명|
+            |---|:---:|
+            |`NORMAL SERVICE.`|성공|
+      required:
+        - resultCode
+        - resultMsg
+    ResponseBody:
+      type: object
+      properties:
+        items:
+          properties:
+            item:
+              type: array
+              items:
+                $ref: '#/components/schemas/SpcdeInfo'
+        numOfRows:
+          type: integer
+          description: 페이지당항목수
+        pageNo:
+          type: integer
+          description: 페이지
+        totalCount:
+          type: integer
+          description: 모든항목수
+      required:
+        - items
+        - numOfRows
+        - pageNo
+        - totalCount
+    SpcdeInfo:
+      type: object
+      properties:
+        dateKind:
+          $ref: '#/components/schemas/DateKind'
+        dateName:
+          type: string
+          description: 명칭
+        isHoliday:
+          type: string
+          enum:
+            - 'Y'
+            - 'N'
+          description: 공휴일여부
+        locdate:
+          type: integer
+          description: 날짜
+        seq:
+          type: integer
+          description: 순번
+      required:
+        - dateKind
+        - dateName
+        - isHoliday
+        - locdate
+        - seq
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: ServiceKey
