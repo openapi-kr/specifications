@@ -1,0 +1,976 @@
+openapi: 3.0.3
+info:
+  title: 주소기반산업서비스
+  description: |-
+    행정안전부  [주소기반산업서비스](https://business.juso.go.kr/addrlink/main.do) 에서 제공하는
+    도로명주소 Open API
+  version: 1.0.0
+externalDocs:
+  description: 주소기반산업서비스
+  url: https://business.juso.go.kr/addrlink/openApi/searchApi.do
+servers:
+  - url: https://business.juso.go.kr
+tags:
+  - name: Link
+  - name: English
+  - name: Detail
+  - name: Coord
+paths:
+  /addrlink/addrLinkApi.do:
+    get:
+      tags:
+        - Link
+      summary: 도로명주소 검색
+      description: 도로명주소 검색
+      operationId: addrLinkApiGet
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 주소 검색어
+        - name: currentPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: 현재 페이지 번호
+        - name: countPerPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: 페이지당 출력할 결과 Row 수
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+        - name: hstryYn
+          in: query
+          schema:
+            type: string
+            default: N
+            enum:
+              - Y
+              - N
+          description: 변동된 주소정보 포함 여부 (\* 2020년12월8일 추가된 항목)
+        - name: firstSort
+          in: query
+          schema:
+            type: string
+            enum:
+              - none
+              - road
+              - location
+            default: none
+          description: |-
+            정렬 (\* 2020년12월8일 추가된 항목)
+
+            - 정확도순 정렬
+              * `none` - Ascending, from A to Z
+            - 우선정렬: keyword(검색어)가 우선정렬 항목에 포함된 결과 우선 표출 
+              * `road` - 도로명 포함
+              * `location` - 지번 포함
+        - name: addInfoYn
+          in: query
+          schema:
+            type: string
+            enum:
+              - Y
+              - N
+            default: N
+          description: |-
+            출력결과에 추가된 항목(hstryYn, relJibun, hemdNm) 제공여부
+
+            (\* 2020년12월8일 추가된 항목)
+
+            (※ 해당 옵션으로 추가제공되는 항목의 경우, 추후 특정항목이 제거되거나 추가될 수 있으니 적용 시 고려해주시기 바랍니다.)
+      responses:
+        '200':
+          description: API 반환값
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrLinkResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrLinkResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Link
+      summary: 도로명주소 검색
+      description: 도로명주소 검색
+      operationId: addrLinkApiPost
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 주소 검색어
+        - name: currentPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: 현재 페이지 번호
+        - name: countPerPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: 페이지당 출력할 결과 Row 수
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+        - name: hstryYn
+          in: query
+          schema:
+            type: string
+            default: N
+            enum:
+              - Y
+              - N
+          description: 변동된 주소정보 포함 여부 (\* 2020년12월8일 추가된 항목)
+        - name: firstSort
+          in: query
+          schema:
+            type: string
+            enum:
+              - none
+              - road
+              - location
+            default: none
+          description: |-
+            정렬 (\* 2020년12월8일 추가된 항목)
+
+            - 정확도순 정렬
+              * `none` - Ascending, from A to Z
+            - 우선정렬: keyword(검색어)가 우선정렬 항목에 포함된 결과 우선 표출 
+              * `road` - 도로명 포함
+              * `location` - 지번 포함
+        - name: addInfoYn
+          in: query
+          schema:
+            type: string
+            enum:
+              - Y
+              - N
+            default: N
+          description: |-
+            출력결과에 추가된 항목(hstryYn, relJibun, hemdNm) 제공여부
+
+            (\* 2020년12월8일 추가된 항목)
+
+            (※ 해당 옵션으로 추가제공되는 항목의 경우, 추후 특정항목이 제거되거나 추가될 수 있으니 적용 시 고려해주시기 바랍니다.)
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrLinkResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrLinkResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+  /addrlink/addrEngApi.do:
+    get:
+      tags:
+        - English
+      summary: 영문주소 검색
+      description: 영문주소 검색
+      operationId: addrEngApiGet
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 주소 검색어
+        - name: currentPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: 현재 페이지 번호
+        - name: countPerPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: 페이지당 출력할 결과 Row 수
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+      responses:
+        '200':
+          description: API 반환값
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrEngResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrEngResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - English
+      summary: 영문주소 검색
+      description: 영문주소 검색
+      operationId: addrEngApiPost
+      parameters:
+        - name: keyword
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 주소 검색어
+        - name: currentPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1
+          description: 현재 페이지 번호
+        - name: countPerPage
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+          description: 페이지당 출력할 결과 Row 수
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+      responses:
+        '200':
+          description: API 반환값
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrEngResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrEngResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+  /addrlink/addrDetailApi.do:
+    get:
+      tags:
+        - Detail
+      summary: 상세주소 검색
+      description: 상세주소 검색
+      operationId: addrDetailApiGet
+      parameters:
+        - name: admCd
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 행정구역코드
+          example: "1135010200"
+        - name: rnMgtSn
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 도로명코드
+          example: "113503109006"
+        - name: udrtYn
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 지하여부
+          example: "0"
+        - name: buldMnnm
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물본번
+          example: 111
+        - name: buldSlno
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물부번
+          example: 0
+        - name: searchType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - dong
+              - floorho
+          description: 검색유형
+          example: "dong"
+        - name: dongNm
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 동 (층호 검색 시 입력)
+          example: 나동
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrDetailResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrDetailResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Detail
+      summary: 상세주소 검색
+      description: 상세주소 검색
+      operationId: addrDetailApiPost
+      parameters:
+        - name: admCd
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 행정구역코드
+          example: "1135010200"
+        - name: rnMgtSn
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 도로명코드
+          example: "113503109006"
+        - name: udrtYn
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 지하여부
+          example: "0"
+        - name: buldMnnm
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물본번
+          example: 111
+        - name: buldSlno
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물부번
+          example: 0
+        - name: searchType
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - dong
+              - floorho
+          description: 검색유형
+          example: "dong"
+        - name: dongNm
+          in: query
+          required: false
+          schema:
+            type: string
+          description: 동 (층호 검색 시 입력)
+          example: 나동
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrDetailResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrDetailResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+  /addrlink/addrCoordApi.do:
+    get:
+      tags:
+        - Coord
+      summary: 좌표제공
+      description: 좌표제공
+      operationId: addrCoordApiGet
+      parameters:
+        - name: admCd
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 행정구역코드
+          example: "1135010200"
+        - name: rnMgtSn
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 도로명코드
+          example: "113503109006"
+        - name: buldMnnm
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물본번
+          example: 111
+        - name: buldSlno
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물부번
+          example: 0
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrCoordResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrCoordResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+    post:
+      tags:
+        - Coord
+      summary: 좌표제공
+      description: 좌표제공
+      operationId: addrCoordApiPost
+      parameters:
+        - name: admCd
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 행정구역코드
+          example: "1135010200"
+        - name: rnMgtSn
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 도로명코드
+          example: "113503109006"
+        - name: buldMnnm
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물본번
+          example: 111
+        - name: buldSlno
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: 건물부번
+          example: 0
+        - name: resultType
+          in: query
+          schema:
+            type: string
+            enum:
+              - xml
+              - json
+            default: xml
+          description: 검색결과형식 설정
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddrCoordResponse'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/AddrCoordResponse/properties/results'
+      security:
+        - ApiKeyAuth: []
+components:
+  schemas:
+    Common:
+      type: object
+      properties:
+        totalCount:
+          type: string
+          description: 총 검색 데이터수
+        currentPage:
+          type: string
+          description: 페이지 번호
+        countPerPage:
+          type: string
+          description: 페이지당 출력할 결과 Row 수
+        errorCode:
+          type: string
+          description: 에러 코드
+          enum:
+            - "0"
+            - "-999"
+            - "E0001"
+            - "E0005"
+            - "E0006"
+            - "E0008"
+            - "E0009"
+            - "E0010"
+            - "E0011"
+            - "E0012"
+            - "E0013"
+            - "E0014"
+            - "E0015"
+        errorMessage:
+          type: string
+          description: 에러 메시지
+      required:
+        - totalCount
+        - currentPage
+        - countPerPage
+        - errorCode
+        - errorMessage
+    Address:
+      type: object
+      properties:
+        roadAddr:
+          type: string
+          description: 전체 도로명주소
+        roadAddrPart1:
+          type: string
+          description: 도로명주소(참고항목 제외)
+        roadAddrPart2:
+          type: string
+          description: 도로명주소 참고항목
+        jibunAddr:
+          type: string
+          description: 지번주소
+        engAddr:
+          type: string
+          description: 도로명주소(영문)
+        zipNo:
+          type: string
+          description: 우편번호
+        admCd:
+          type: string
+          description: 행정구역코드
+        rnMgtSn:
+          type: string
+          description: 도로명코드
+        bdMgtSn:
+          type: string
+          description: 건물관리번호
+        detBdNmList:
+          type: string
+          description: 상세건물명
+        bdNm:
+          type: string
+          description: 건물명
+        bdKdcd:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            공동주택여부
+            * `1` : 공동주택
+            * `0` : 비공동주택
+        siNm:
+          type: string
+          description: 시도명
+        sggNm:
+          type: string
+          description: 시군구명
+        emdNm:
+          type: string
+          description: 읍면동명
+        liNm:
+          type: string
+          description: 법정리명
+        rn:
+          type: string
+          description: 도로명
+        udrtYn:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            지하여부
+            * `0` : 지상
+            * `1` : 지하)
+        buldMnnm:
+          type: string
+          description: 건물본번
+        buldSlno:
+          type: string
+          description: 건물부번
+        mtYn:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            산여부
+            * `0` : 대지
+            * `1` : 산
+        lnbrMnnm:
+          type: string
+          description: 지번본번(번지)
+        lnbrSlno:
+          type: string
+          description: 지번부번(호)
+        emdNo:
+          type: string
+          description: 읍면동일련번호
+        hstryYn:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            변동이력여부 (\* 2020년12월8일 추가된 항목)
+            * `0`: 현행 주소정보
+            * `1`: 요청변수의 keyword(검색어)가 변동된 주소정보에서 검색된 정보)
+        relJibun:
+          type: string
+          description: |-
+            관련지번 (\* 2020년12월8일 추가된 항목)
+        hemdNm:
+          type: string
+          description: |-
+            관할주민센터 (\* 2020년12월8일 추가된 항목)
+
+            ※ 참고정보이며, 실제와 다를 수 있습니다.
+      required:
+        - roadAddr
+        - roadAddrPart1
+        - jibunAddr
+        - engAddr
+        - zipNo
+        - admCd
+        - rnMgtSn
+        - bdMgtSn
+        - bdKdcd
+        - siNm
+        - sggNm
+        - emdNm
+        - rn
+        - udrtYn
+        - buldMnnm
+        - buldSlno
+        - mtYn
+        - lnbrMnnm
+        - lnbrSlno
+        - emdNo
+    AddrLinkResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            common:
+              $ref: '#/components/schemas/Common'
+            juso:
+              type: array
+              nullable: true # 문서와 다르게 null이 될 수 있음
+              items:
+                $ref: '#/components/schemas/Address'
+          required:
+            - common
+            - juso
+    EnglishAddress:
+      type: object
+      properties:
+        roadAddr:
+          type: string
+          description: 영문 도로명주소
+        jiBunAddr:
+          type: string
+          description: 영문 지번주소
+        zipNo:
+          type: string
+          description: 우편번호
+        admCd:
+          type: string
+          description: 행정구역코드
+        rnMgtSn:
+          type: string
+          description: 도로명코드
+        bdKdcd:
+          type: string
+          enum:
+            - "1"
+            - "0"
+          description: |-
+            공동주택여부
+            * `1` : 공동주택
+            * `0` : 비공동주택
+        siNm:
+          type: string
+          description: 영문 시도명
+        sggNm:
+          type: string
+          description: 영문 시군구명
+        emdNm:
+          type: string
+          description: 영문 읍면동명
+        liNm:
+          type: string
+          description: 영문 법정리명
+        rn:
+          type: string
+          description: 영문 도로명
+        udrtYn:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            지하여부
+            * `0` : 지상
+            * `1` : 지하
+        buldMnnm:
+          type: string
+          description: 건물본번
+        buldSlno:
+          type: string
+          description: 건물부번
+        mtYn:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            산여부
+            * `0` : 대지
+            * `1` : 산
+        lnbrMnnm:
+          type: string
+          description: 지번본번(번지)
+        lnbrSlno:
+          type: string
+          description: 지번부번(호)
+        korAddr:
+          type: string
+          description: 도로명주소(한글)
+      required:
+        - roadAddr
+        - jiBunAddr
+        - zipNo
+        - admCd
+        - rnMgtSn
+        - bdKdcd
+        - siNm
+        - sggNm
+        - emdNm
+        - rn
+        - udrtYn
+        - buldMnnm
+        - buldSlno
+        - mtYn
+        - lnbrMnnm
+        - lnbrSlno
+        - korAddr
+    AddrEngResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            common:
+              $ref: '#/components/schemas/Common'
+            juso:
+              type: array
+              nullable: true # 문서와 다르게 null이 될 수 있음
+              items:
+                $ref: '#/components/schemas/EnglishAddress'
+    DetailAddress:
+      type: object
+      properties:
+        admCd:
+          type: string
+          description: 행정구역코드
+        rnMgtSn:
+          type: string
+          description: 도로명코드
+        udrtYn:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            지하여부
+            * `0` : 지상
+            * `1` : 지하
+        buldMnnm:
+          type: string # 실제로는 string이지만 문서에는 number로 되어 있음
+          description: 건물본번
+        buldSlno:
+          type: string # 실제로는 string이지만 문서에는 number로 되어 있음
+          description: 건물부번
+        dongNm:
+          type: string
+          description: 동 정보
+        floorNm:
+          type: string
+          description: 층 정보
+        hoNm:
+          type: string
+          description: 호 정보
+      required:
+        - admCd
+        - rnMgtSn
+        - udrtYn
+        - buldMnnm
+        - buldSlno
+    AddrDetailResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            common:
+              $ref: '#/components/schemas/Common'
+            juso:
+              type: array
+              nullable: true # 문서와 다르게 null이 될 수 있음
+              items:
+                $ref: '#/components/schemas/DetailAddress'
+    Coord:
+      type: object
+      properties:
+        admCd:
+          type: string
+          description: 행정구역코드
+        rnMgtSn:
+          type: string
+          description: 도로명코드
+        bdMgtSn:
+          type: string
+          description: 건물관리번호
+        udrtYn:
+          type: string
+          enum:
+            - "0"
+            - "1"
+          description: |-
+            지하여부
+            * `0` : 지상
+            - `1` : 지하
+        buldMnnm:
+          type: string # 실제로는 string이지만 문서에는 number로 되어 있음
+          description: 건물본번
+        buldSlno:
+          type: string # 실제로는 string이지만 문서에는 number로 되어 있음
+          description: 건물부번
+        entX:
+          type: string # 실제로는 string이지만 문서에는 number로 되어 있음
+          description: X좌표
+        entY:
+          type: string # 실제로는 string이지만 문서에는 number로 되어 있음
+          description: Y좌표
+        bdNm:
+          type: string
+          description: 건물명
+      required:
+        - admCd
+        - rnMgtSn
+        - bdMgtSn
+        - udrtYn
+        - buldMnnm
+        - buldSlno
+        - entX
+        - entY
+    AddrCoordResponse:
+      type: object
+      properties:
+        results:
+          type: object
+          properties:
+            common:
+              $ref: '#/components/schemas/Common'
+            juso:
+              type: array
+              nullable: true # 문서와 다르게 null이 될 수 있음
+              items:
+                $ref: '#/components/schemas/Coord'
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: confmKey
+      in: query
