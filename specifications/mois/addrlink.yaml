@@ -11,10 +11,10 @@ externalDocs:
 servers:
   - url: https://business.juso.go.kr
 tags:
-  - Link
-  - English
-  - Detail
-  - Coord
+  - name: Link
+  - name: English
+  - name: Detail
+  - name: Coord
 paths:
   /addrlink/addrLinkApi.do:
     get:
