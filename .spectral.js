@@ -14,6 +14,7 @@ module.exports = {
     'property-case-convention': 'off',
     'parameter-case-convention': 'off',
     'string-boundary': 'off',
+    'array-responses': 'off',
     'components-key-naming-convention': {
       description:
         'Components fixed fields must be alphanumeric, with optional hyphens, underscores, or periods.',
