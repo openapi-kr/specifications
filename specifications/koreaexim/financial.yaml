@@ -1,0 +1,443 @@
+openapi: 3.0.3
+info:
+  title: 한국수출입은행 오픈 API
+  description: |-
+    한국수출입은행이 보유한 공공데이터를 제공받아 누구나 직접 응용프로그램과 서비스개발 등에 활용할 수 있습니다.
+  version: '2022.08.10'
+  contact:
+    name: 이혜원
+    url: 'https://www.koreaexim.go.kr/ir/HPHKIR019M01'
+    email: h.lee@koreaexim.go.kr
+  license:
+    name: 이용허락범위 제한 없음
+    url: 'https://www.kogl.or.kr/info/license.do'
+  termsOfService: 'https://www.koreaexim.go.kr/cu/HPHKCU053M01'
+externalDocs:
+  description: 한국수출입은행
+  url: 'https://www.koreaexim.go.kr/ir/HPHKIR019M01'
+servers:
+  - url: https://www.koreaexim.go.kr
+tags:
+  - name: Exchange
+  - name: International
+  - name: Interest
+paths:
+  /site/program/financial/exchangeJSON:
+    get:
+      tags:
+        - Exchange
+      summary: 현재환율 API
+      description: |-
+        한국수출입은행이 제공하는 환율정보입니다.
+
+        # 공지사항
+        - 보다 안정적인 서비스 제공을 위하여, 7월부터 Open API 서비스에 일일 호출 가능 횟수 제한이 적용될 예정입니다. (2020.6.12)
+        홈페이지 개편으로 인해 IP주소가 변경되었습니다. (2022.4.9)
+        
+        # 개인정보보유기간 만료에 따른 인증키 파기 처리 관련
+        RESULT 3으로 반환되시는 경우, 최초 신청시 입력해주셨던 개인정보의 보유기간이 만료되어 API 키가 파기되었을 가능성이 높습니다.
+        한국수출입은행에서 제공하는 OPEN API의 경우 신청시 개인정보를 받고 있어
+        개인정보보호법에 따라 보유기간(2년)이 지난 사용자의 경우 개인정보 및 사용정보 등이 폐기처리 됩니다.
+        다만, 보유기간 전 홈페이지에 접속하시어 개인정보 보유 재동의를 해주시면 사용기간이 2년이 연장됩니다.
+        키 파기 처리전 신청시 등록해주셨던 이메일로 보유기간 만료 예정이며, 재동의를 독려하는 안내메일을 보내드리고 있습니다.
+        파기된 키의 경우 재사용이 불가함으로 신규 신청부탁드립니다.
+        
+        # 변경 이력
+        - 일일 호출 가능 횟수를 1000회로 제한 (1000회 이상 호출 시 result:4 반환, 데이터 미제공) / 적용 일시 : 2020. 7. 13(월) 오후 6시
+        - 홈페이지 IP 주소 변경 (211.171.208.5 -> 39.115.136.135) / 적용 일시 : 2022. 4. 11(월) 오전 9시
+      operationId: exchange
+      parameters:
+        - name: searchdate
+          in: query
+          description: 검색요청날짜
+          required: false
+          schema:
+            type: string
+            format: date
+            description: ex) 2015-01-01, 20150101, (DEFAULT)현재일
+        - name: data
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - AP01
+            example: AP01
+          description: 데이터코드, 고정값 AP01
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeResponse'
+      security:
+        - ApiKeyAuth: []
+  /site/program/financial/interestJSON:
+    get:
+      tags:
+        - Interest
+      summary:  대출금리 API
+      description: |-
+        한국수출입은행이 제공하는 대출금리정보입니다.
+
+        각 대출기간에 대한 고정기준금리를 일 기준으로 제공합니다. 
+      operationId: interest
+      parameters:
+        - name: searchdate
+          in: query
+          description: 검색요청날짜
+          required: false
+          schema:
+            type: string
+            format: date
+            description: ex) 2015-01-01, 20150101, (DEFAULT)현재일
+        - name: data
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - AP02
+          description: 데이터코드, 고정값 AP02
+          example: AP02
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterestResponse'
+      security:
+        - ApiKeyAuth: []
+  /site/program/financial/internationalJSON:
+    get:
+      tags:
+        - International
+      summary: 국제금리 API
+      description: |-
+        한국수출입은행이 제공하는 국제금리정보입니다.
+
+        SOFR 등 국제금리를 일 기준으로 제공합니다.
+      operationId: international
+      parameters:
+        - name: searchdate
+          in: query
+          description: 검색요청날짜
+          required: false
+          schema:
+            type: string
+            format: date
+            description: ex) 2015-01-01, 20150101, (DEFAULT)현재일
+        - name: data
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - AP03
+          description: 데이터코드, 고정값 AP03
+          example: AP03
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternationalResponse'
+      security:
+        - ApiKeyAuth: []
+components:
+  schemas:
+    ExchangeResponse:
+      oneOf:
+        - $ref: '#/components/schemas/ExchangeSuccess'
+        - $ref: '#/components/schemas/ExchangeFailed'
+    ExchangeSuccess:
+      type: object
+      properties:
+        result:
+          type: integer
+          enum:
+            - 1
+          description: 조회 결과
+        cur_unit:
+          type: string
+          description: 통화코드
+        cur_nm:
+          type: string
+          description: 국가/통화명
+        ttb:
+          type: string
+          description: 전신환(송금) 받으실때
+        tts:
+          type: string
+          description: 전신환(송금) 보내실때
+        deal_bas_r:
+          type: string
+          description: 매매 기준율
+        bkpr:
+          type: string
+          description: 장부가격
+        yy_efee_r:
+          type: string
+          description: 년환가료율
+        ten_dd_efee_r:
+          type: string
+          description: 10일환가료율
+        kftc_deal_bas_r:
+          type: string
+          description: 서울외국환중개 매매기준율
+        kftc_bkpr:
+          type: string
+          description: 서울외국환중개 장부가격
+      required:
+        - result
+        - cur_unit
+        - cur_nm
+        - ttb
+        - tts
+        - deal_bas_r
+        - bkpr
+        - yy_efee_r
+        - ten_dd_efee_r
+        - kftc_deal_bas_r
+        - kftc_bkpr
+    ExchangeFailed:
+      type: object
+      properties:
+        result:
+          type: integer
+          enum:
+            - 2
+            - 3
+            - 4
+          description: |-
+            조회 결과
+            | 결과코드 | 설명 |
+            | --- | --- |
+            | 2 | DATA코드 오류 |
+            | 3 | 인증코드 오류 |
+            | 4 | 일일제한횟수 마감 |
+        cur_unit:
+          type: string
+          nullable: true
+          description: 통화코드
+        cur_nm:
+          type: string
+          nullable: true
+          description: 국가/통화명
+        ttb:
+          type: string
+          nullable: true
+          description: 전신환(송금) 받으실때
+        tts:
+          type: string
+          nullable: true
+          description: 전신환(송금) 보내실때
+        deal_bas_r:
+          type: string
+          nullable: true
+          description: 매매 기준율
+        bkpr:
+          type: string
+          nullable: true
+          description: 장부가격
+        yy_efee_r:
+          type: string
+          nullable: true
+          description: 년환가료율
+        ten_dd_efee_r:
+          type: string
+          nullable: true
+          description: 10일환가료율
+        kftc_deal_bas_r:
+          type: string
+          nullable: true
+          description: 서울외국환중개 매매기준율
+        kftc_bkpr:
+          type: string
+          nullable: true
+          description: 서울외국환중개 장부가격
+      required:
+        - result
+        - cur_unit
+        - cur_nm
+        - ttb
+        - tts
+        - deal_bas_r
+        - bkpr
+        - yy_efee_r
+        - ten_dd_efee_r
+        - kftc_deal_bas_r
+        - kftc_bkpr
+    InterestResponse:
+      type: array
+      items:
+        oneOf:
+          - $ref: '#/components/schemas/InterestSuccess'
+          - $ref: '#/components/schemas/InterestFailed'
+    InterestSuccess:
+      type: object
+      properties:
+        result:
+          type: integer
+          enum:
+            - 1
+          description: 조회 결과
+        sfln_intrc_nm:
+          type: string
+          description: 대출기간
+        int_r:
+          type: string
+          description: 고정기준금리
+      required:
+        - result
+        - sfln_intrc_nm
+        - int_r
+    InterestFailed:
+      properties:
+        result:
+          type: integer
+          enum:
+            - 2
+            - 3
+            - 4
+          description: |-
+            조회 결과
+            | 결과코드 | 설명 |
+            | --- | --- |
+            | 2 | DATA코드 오류 |
+            | 3 | 인증코드 오류 |
+            | 4 | 일일제한횟수 마감 |
+        sfln_intrc_nm:
+          type: string
+          nullable: true
+          description: 대출기간
+        int_r:
+          type: string
+          nullable: true
+          description: 고정기준금리
+      required:
+        - result
+        - sfln_intrc_nm
+        - int_r
+    InternationalResponse:
+      oneOf:
+        - $ref: '#/components/schemas/InternationalSuccess'
+        - $ref: '#/components/schemas/InternationalFailed'
+    InternationalSuccess:
+      type: object
+      properties:
+        result:
+          type: integer
+          enum:
+            - 1
+          description: 조회 결과
+        sofr_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        estr_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        euribor_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        tona_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        tibor_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        swapRfr_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        libor_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        swap_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+        cirr_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/InternationalSuccessItem'
+      required:
+        - result
+        - sofr_list
+        - estr_list
+        - euribor_list
+        - tona_list
+        - tibor_list
+        - swapRfr_list
+        - libor_list
+        - swap_list
+        - cirr_list
+    InternationalSuccessItem:
+      type: object
+      properties:
+        result:
+          type: integer
+          enum:
+            - 1
+          description: 조회 결과
+        cur_fund:
+          type: string
+          description: 금리 통화 정보
+        sfln_intrc_nm:
+          type: string
+          description: 금리 기간 정보
+        int_r:
+          type: string
+          description: 금리 정보
+      required:
+        - result
+        - cur_fund
+        - sfln_intrc_nm
+        - int_r
+    InternationalFailed:
+      type: object
+      properties:
+        result:
+          type: integer
+          enum:
+            - 2
+            - 3
+            - 4
+          description: |-
+            조회 결과
+            | 결과코드 | 설명 |
+            | --- | --- |
+            | 2 | DATA코드 오류 |
+            | 3 | 인증코드 오류 |
+            | 4 | 일일제한횟수 마감 |
+        cur_fund:
+          type: string
+          nullable: true
+          description: 금리 통화 정보
+        sfln_intrc_nm:
+          type: string
+          nullable: true
+          description: 금리 기간 정보
+        int_r:
+          type: string
+          nullable: true
+          description: 금리 정보
+      required:
+        - result
+        - cur_fund
+        - sfln_intrc_nm
+        - int_r
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: authkey
+      in: query
