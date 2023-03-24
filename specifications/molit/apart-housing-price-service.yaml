@@ -1,0 +1,355 @@
+openapi: 3.0.3
+info:
+  title: 공동주택가격정보서비스
+  version: 1.0.0
+  description: |-
+    공동주택에 대해 매년 공시기준일(1월1일)에 공시한
+    공동주택 가격정보의 지리데이터에서 생성된 맵 이미지와
+    도형 및 속성 값을 포함한 피처 집합을 제공하는
+    공동주택가격정보서비스
+externalDocs:
+  description: 공공데이터포털
+  url: 'https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15057988'
+servers:
+  - url: https://apis.data.go.kr/1611000/nsdi/ApartHousingPriceService
+tags:
+  - name: ApartHousingPriceService
+    description: 공동주택가격정보서비스
+paths:
+  /wms/getApartHousingPriceWMS:
+    get:
+      tags:
+        - ApartHousingPriceService
+      summary: 공동주택가격WMS조회
+      description: 좌표정보를 통해 공동주택가격에 대한 지리데이터에서 생성된 맵 이미지를 조회하는 공동주택가격WMS조회 기능
+      security:
+        - apiKey: []
+      parameters:
+        - name: layers
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            레이어 목록
+            화면에 표출할 레이어명의 나열, 값은 쉼표로 구분
+          example: '163'
+        - name: crs
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |
+            좌표체계
+
+            좌표 체계를 나타냅니다. 현재   Modified Korea Central Belt(EPSG:5174) 좌표계를 지원합니다.
+          example: EPSG:5174
+        - name: bbox
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |
+            크기 범위
+
+            크기(extent)를 정의하는 범위(bounding box). 값은 crs 파라미터 형식에 맞춰 miny,minx,maxy,maxx 를 입력
+          example: '191000.225,447240.534,191179.03,447423.308'
+        - name: width
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: |
+            너비
+
+            반환 이미지의 너비(픽셀)
+          example: 915
+        - name: height
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: |
+            높이
+
+            반환 이미지의 높이(픽셀)
+          example: 700
+        - name: format
+          in: query
+          required: true
+          schema:
+            type: string
+            enum:
+              - image/png
+              - image/jpeg
+              - image/gif
+          description: |
+            산출물 형식
+
+            반환 이미지 형식. png나   jpeg(jpg), gif 이미지 포맷을 지원
+          example: image/png
+        - name: transparent
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: |
+            투명도
+
+            반환 이미지 배경의 투명 여부
+          example: false
+        - name: bgcolor
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            배경색
+
+            반환 이미지의 배경색(0xRRGGBB)
+          example: '0xFFFFFF'
+        - name: exceptions
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - blank
+              - xml
+              - inimage
+          description: |
+            예외 보고
+
+            예외 발생 시 처리 방법.
+            1. blank : 빈 이미지
+            2. xml : utf8 인코딩형식으로 에러 코드, 이름, 설명 정보를 담은   xml 파일
+            3. inimage : 에러 정보가 포함된 이미지
+      responses:
+        '200': 
+          description: OK
+          content:
+            "image/*": # image/png 처럼 상세히 적을경우 서버에서 오류가 발생함
+              schema:
+                type: string
+                format: binary
+  /attr/getApartHousingPriceAttr:
+    get:
+      tags:
+        - ApartHousingPriceService
+      summary: 공동주택가격속성조회
+      description: 고유번호, 기준일자를 통해 공동주택가격에 대한 속성정보를 조회하는 공동주택가격속성조회 기능
+      operationId: getApartHousingPriceAttr
+      security:
+        - apiKey: []
+      parameters:
+        - name: pnu
+          in: query
+          required: true
+          schema:
+            type: string
+          description: |
+            고유번호
+
+            각 필지를 서로 구별하기 위하여 필지마다 붙이는 고유한 번호
+          example: '1144012700116340000'
+        - name: stdrYear
+          in: query
+          required: false
+          schema:
+            type: string
+          description: |
+            기준일자
+
+            기준년도(YYYY: 4자리)
+          example: '2019'
+        - name: format
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - json
+              - xml
+          description: 응답결과 형식
+          example: json
+        - name: numOfRows
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: 한 페이지 결과 수
+          example: 10
+        - name: pageNo
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: 페이지 번호
+          example: 1
+      responses:
+        '200':
+          description: OK
+          content:
+            '*/*': # application/json 처럼 상세히 적을경우 빈 오브젝트가 반환됨
+              schema:
+                $ref: '#/components/schemas/ApartHousingPriceAttrResponse'
+components:
+  schemas:
+    Pagination:
+      type: object
+      properties:
+        numOfRows:
+          type: string
+          description: 한 페이지 결과 수
+          example: '10'
+        pageNo:
+          type: string
+          description: 페이지 번호
+          example: '1'
+        totalCount:
+          type: string
+          description: 전체 결과 수
+          example: '820'
+      required:
+        - numOfRows
+        - pageNo
+        - totalCount
+    Response:
+      type: object
+      properties:
+        resultCode:
+          type: string
+          description: 결과코드
+          nullable: true
+        resultMsg:
+          type: string
+          description: 결과메시지
+          nullable: true
+      required:
+        - resultCode
+        - resultMsg
+    ApartHousingPriceAttrResponse:
+      type: object
+      properties:
+        apartHousingPrices:
+          allOf:
+            - $ref: '#/components/schemas/Response'
+            - $ref: '#/components/schemas/Pagination'
+            - type: object
+              properties:
+                field:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ApartHousingPriceAttr'
+              required:
+                - field
+    ApartHousingPriceAttr:
+      type: object
+      properties:
+        pnu:
+          type: string
+          description: |-
+            고유번호
+
+            각 필지를 서로 구별하기 위하여 필지마다 붙이는 고유한 번호
+          example: '1144012700116340000'
+        ldCode:
+          type: string
+          description: |-
+            법정동코드
+
+            토지가 소재한 행정구역코드(법정동코드) 10자리
+          example: '1144012700'
+        ldCodeNm:
+          type: string
+          description: |-
+            법정동명
+
+            토지가 소재한 소재지의 행정구역 명칭(법정동명)
+          example: '서울특별시 마포구 상암동'
+        regstrSeCode:
+          type: string
+          description: 특수지구분코드
+          example: '1'
+        regstrSeCodeNm:
+          type: string
+          description: |-
+            특수지구분명
+
+            토지가 위치한 토지의 대장 구분 (토지(임야)대장구분)
+          example: '일반'
+        mnnmSlno:
+          type: string
+          description: |-
+            지번
+
+            필지에 부여하여 지적공부에 등록한 번호
+          example: '1634'
+        stdrYear:
+          type: string
+          description: |-
+            기준년도
+
+            공동주택가격의 기준년도
+          example: '2019'
+        stdrMt:
+          type: string
+          description: |-
+            기준월
+
+            공동주택가격의 기준월
+          example: '01'
+        aphusCode:
+          type: string
+          description: 공동주택코드
+          example: '20022499'
+        aphusSeCode:
+          type: string
+          description: 공동주택구분코드
+          example: '1'
+        aphusSeCodeNm:
+          type: string
+          description: 공동주택구분명
+          example: '아파트'
+        spclLandNm:
+          type: string
+          description: 특수지명
+          example: '상암택지개발사업지구 2-1블럭'
+        aphusNm:
+          type: string
+          description: 공동주택명
+          example: '상암월드컵1단지'
+        dongNm:
+          type: string
+          description: 동명
+          example: '101'
+        floorNm:
+          type: string
+          description: 층명
+          example: '2'
+        hoNm:
+          type: string
+          description: 호명
+          example: '201'
+        prvuseAr:
+          type: string
+          description: 전용면적(㎡)
+          example: '39.66'
+        pblntfPc:
+          type: string
+          description: 공시가격(원)
+          example: '60000000'
+        lastUpdtDt:
+          type: string
+          description: 데이터기준일자
+          example: '2016-10-05'
+      required:
+        - pnu
+        - stdrYear
+        - stdrMt
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: query
+      name: ServiceKey
+      description: 인증키
