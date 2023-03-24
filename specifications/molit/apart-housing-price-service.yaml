@@ -237,12 +237,12 @@ components:
             - $ref: '#/components/schemas/Pagination'
             - type: object
               properties:
-                fields:
+                field:
                   type: array
                   items:
                     $ref: '#/components/schemas/ApartHousingPriceAttr'
               required:
-                - fields
+                - field
     ApartHousingPriceAttr:
       type: object
       properties:
