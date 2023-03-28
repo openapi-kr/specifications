@@ -2097,6 +2097,8 @@ components:
       properties:
         corp_cls:
           $ref: '#/components/schemas/CorpCls'
+        corp_name:
+          $ref: '#/components/schemas/CorpName'
         corp_code:
           $ref: '#/components/schemas/CorpCode'
         stock_code:
